@@ -1,0 +1,268 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Workshops - Add</title>
+
+    <!-- Bootstrap core CSS -->
+    <!--<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">-->
+    <script src="https://kit.fontawesome.com/5842000312.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/workshop/addworkshop.js') }}"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navbarToggler1"
+                aria-expanded="false" data-target="#navbarToggler1">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggler1">
+            <a class="navbar-brand" href="/">Pakuranga College Workshops</a>
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="navbar-item active">
+                    <a class="nav-link" href="/">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/workshop/view">Workshops</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/subject/view">Subjects</a>
+                </li>
+
+                {% if user.is_admin() %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/view">Users</a>
+                </li>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav mt-2 mt-lg-0 navbar-right">
+                <li>
+                    <a class="nav-link" href="/user/signout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <header id="header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="mt-2"><span><i class="fas fa-tools mr-2"></i></span>Workshops <small>Add</small></h1>
+                </div>
+                <div class="col-md-2">
+                    <!-- <div class="dropdown create">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Action</a>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="toast main-colour-bg" style="position: absolute; top: 5rem; right: 5rem; z-index: 10;" id="add_notification" role="alert" data-autohide="false" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header main-colour-bg">
+            <strong class="mr-auto">Notification</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">
+            <p id="toast_text"></p>
+        </div>
+    </div>
+
+    <section id="main">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <ul class="list-group">
+                        <li class="list-group-item active main-colour-bg">
+                            <span>
+                                <i class="fa fa-bars mr-2"></i>
+                            </span>Navigation
+                        </li>
+                        <li class="list-group-item">
+                            <span><i class="fas fa-tools mr-2"></i></span> <a href="/workshop/view">Workshops</a> <span class="badge badge-pill badge-secondary float-right">{{ counts["workshop_count"] }}</span>
+                        </li>
+                        {% if user.is_admin() or user.is_teacher() %}
+                        <li class="list-group-item">
+                            <span><i class="fa fa-plus"></i></span> Add a workshop
+                        </li>
+                        {% endif %}
+                        <li class="list-group-item">
+                            <span><i class="fa fa-arrow-left"></i></span> <a href="/workshop/view">Back to workshops</a>
+                        </li>
+                        <li class="list-group-item">
+                            <span><i class="fa fa-arrow-left"></i></span> <a href="/">Back to dashboard</a>
+                        </li>
+                    </ul>
+
+                    <div class="card mt-4 mb-4">
+                        <div class="card-header main-colour-bg">
+                            <span><i class="fa fa-info-circle mr-1"> </i></span> Your info
+                        </div>
+                        <div class="card-body">
+                            <h4>First Name:</h4>
+                            <p>{{ user.first_name }}</p>
+
+                            <h4>Last Name:</h4>
+                            <p>{{ user.last_name }}</p>
+
+                            <h4>Role:</h4>
+                            <p>{{ user.role }}</p>
+
+                            <div class="btn-toolbar">
+                                <a href="/user/edit/{{ user.user_id }}" class="btn btn-primary btn-sm mr-2">Edit profile</a>
+                                {% if not user.is_admin() %}
+                                <a href="/user/promotionrequest" class="btn btn-primary btn-sm">Request for higher rank</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-header main-colour-bg">
+                            <h5>Add a new workshop</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <div class="card">
+                                        <div class="card-header main-colour-bg">
+                                            <h5>Add workshop</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <form method="post" id="add_workshop_form">
+                                                <div class="form-row">
+                                                    <div class="form-group col-sm-5">
+                                                        <label for="subject">Subject:</label>
+                                                        <select required class="form-control" id="subject" name="subject">
+                                                            {% for subject in subjects %}
+                                                            <option value="{{ subject.subject_id }}">Level {{ subject.level }} {{ subject.subject }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-sm-7">
+                                                        <label for="workshop_name">Workshop name:</label>
+                                                        <input required class="form-control" id="workshop_name" name="workshop_name" type="text" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-sm-4">
+                                                        <label for="max_students">Max students:</label>
+                                                        <select required class="form-control" id="max_students" name="max_students">
+                                                            <option value="0">0 (No limit)</option>
+
+                                                            {% for i in range(1, 30) %}
+                                                            <option value="{{ i }}">{{ i }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group col-sm-5">
+                                                        <label for="date_time">Date/Time:</label>
+                                                        <input required class="form-control" id="date_time" name="date_time" type="datetime-local" />
+                                                    </div>
+                                                    <div class="form-group col-sm-3">
+                                                        <label for="location">Location:</label>
+                                                        <input required class="form-control" id="location" name="location" type="text" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-sm-12">
+                                                        <label for="summary">Summary:</label>
+                                                        <input required class="form-control" id="summary" name="summary" type="text"/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-check form-check-inline form-group col-sm-12">
+                                                        <input required value="1" type="checkbox" class="form-check-input" name="private" id="private" />
+                                                        <label class="form-check-label" for="private">Private workshop?</label>
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-lg btn-primary btn-block" id="add_workshop_btn">Add workshop</button>
+                                                <p class="mt-3" id="response_txt_workshop"></p>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="card">
+                                        <div class="card-header main-colour-bg">
+                                            <h5>OPTIONAL: Add a new subject</h5>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="post" id="add_subject_form">
+                                            <div class="form-group">
+                                                <label for="subject_name">Subject Name:</label>
+                                                <input required class="form-control" id="subject_name" name="subject_name" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="level">Level:</label>
+                                                <select required class="form-control" id="level" name="level">
+                                                    <option value="1">Level 1</option>
+                                                    <option value="2">Level 2</option>
+                                                    <option value="3">Level 3</option>
+                                                </select>
+                                            </div>
+                                            <button class="btn btn-lg btn-primary btn-block" id="add_subject_btn">Add subject</button>
+                                            <p class="mt-3" id="subject_add_response"></p>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="confirm_deletion_modal">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4>Confirm deletion</h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="subject_id_modal">Are you sure you want to delete subject workshop #---?</div>
+                                            <button class="btn btn-primary" id="modal_accept_btn">Yes</button>
+                                            <button class="btn btn-danger" id="modal_deny_btn">No</button>
+                                            <p class="mt-3" id="response_text"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="add_workshop_modal">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4>Add a workshop</h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Add</p>
+                                            <p class="mt-3" id="response_text"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

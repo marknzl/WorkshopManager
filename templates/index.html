@@ -1,0 +1,278 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Workshops - Dashboard</title>
+
+    <!-- Bootstrap core CSS -->
+    <!--<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">-->
+    <script src="https://kit.fontawesome.com/5842000312.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/homepage/index.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navbarToggler1"
+                aria-expanded="false" data-target="#navbarToggler1">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggler1">
+            <a class="navbar-brand" href="#">Pakuranga College Workshops</a>
+            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="navbar-item active">
+                    <a class="nav-link" href="/">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/workshop/view">Workshops</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/subject/view">Subjects</a>
+                </li>
+
+                {% if user.is_admin() %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/view">Users</a>
+                </li>
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav mt-2 mt-lg-0 navbar-right">
+                <li>
+                    <a class="nav-link" href="/user/signout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <header id="header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="mt-2"><span><i class="fas fa-tachometer-alt mr-2"></i></span>Dashboard <small>Welcome, {{ user.first_name }}</small></h1>
+                </div>
+                <div class="col-md-2">
+                    <!-- <div class="dropdown create">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Action</a>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="toast main-colour-bg" style="position: absolute; top: 5rem; right: 5rem;" id="delete_notification" role="alert" data-autohide="false" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header main-colour-bg">
+            <strong class="mr-auto">Notification</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">
+            <p id="toast_text"></p>
+        </div>
+    </div>
+
+    <section id="main">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <ul class="list-group">
+                        <li class="list-group-item active main-colour-bg">
+                            <span>
+                                <i class="fas fa-tachometer-alt"></i>
+                            </span>Dashboard
+                        </li>
+                        <li class="list-group-item">
+                            <span><i class="fa fa-tools"></i></span> <a href="/workshop/view">Workshops</a> <span class="badge badge-pill badge-secondary float-right">{{ counts["workshop_count"] }}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <span><i class="fa fa-book"> </i></span> <a href="/subject/view">Subjects</a> <span class="badge badge-pill badge-secondary float-right">{{ counts["subject_count"] }}</span>
+                        </li>
+                        {% if user.is_admin() %}
+                        <li class="list-group-item">
+                            <span><i class="fa fa-user"></i></span> <a href="/user/view">Users</a> <span class="badge badge-pill badge-secondary float-right">{{ counts["user_count"] }}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <span><i class="fa fa-bullhorn"></i></span> <a href="/user/promotionrequests">Promotion requests</a>
+                            {% if not counts["promotion_count"] == 0 %}
+                            <span class="badge badge-pill badge-secondary float-right">{{ counts["promotion_count"] }}</span>
+                            {% endif %}
+                        </li>
+                        {% endif %}
+                    </ul>
+
+                    <div class="card mt-4 mb-4">
+                        <div class="card-header main-colour-bg">
+                            <span><i class="fa fa-info-circle mr-1"> </i></span> Your info
+                        </div>
+                        <div class="card-body">
+                            <h4>First Name:</h4>
+                            <p>{{ user.first_name }}</p>
+
+                            <h4>Last Name:</h4>
+                            <p>{{ user.last_name }}</p>
+
+                            <h4>Role:</h4>
+                            <p>{{ user.role }}</p>
+
+                            <div class="btn-toolbar">
+                                <a href="/user/edit/{{ user.user_id }}" class="btn btn-primary btn-sm mr-2">Edit profile</a>
+                                {% if not user.is_admin() %}
+                                <a href="/user/promotionrequest" class="btn btn-primary btn-sm">Request for higher rank</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-header main-colour-bg">
+                            <h5 class="card-title">Overview</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-group">
+                                {% if user.is_admin() %}
+                                <div class="card dash-box">
+                                    <div class="card-body">
+                                        <h2><span><i class="fa fa-user mr-2"></i></span>{{ counts["user_count"] }}</h2>
+                                        <h4>Users</h4>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="card dash-box">
+                                    <div class="card-body">
+                                        <h2><span><i class="fa fa-tasks mr-2"></i></span>{{ counts["workshop_count"] }}</h2>
+                                        <h4>Workshops</h4>
+                                    </div>
+                                </div>
+                                <div class="card dash-box">
+                                    <div class="card-body">
+                                        <h2><span><i class="fa fa-book mr-2"> </i></span>{{ counts["subject_count"] }}</h2>
+                                        <h4>Subjects</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header main-colour-bg">
+                            {% if user.is_student() or user.is_teacher() %}
+                            <h5 class="card-title">My workshops</h5>
+                            {% else %}
+                            <h5 class="card-title">All ongoing workshops</h5>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            {% if user.is_student() %}
+                            <div class="card-columns">
+                                {% for workshop in workshops %}
+                                <div class="card" id="{{ workshop["workshop_id"] }}">
+                                    <div class="card-header main-colour-bg">
+                                        <h5 class="card-title">
+                                            <a href="/workshop/view/{{ workshop["workshop_id"] }}" style="color: white;">
+                                                {% if workshop["private"] == 1%}
+                                                <span><i class="fa fa-lock mr-2"></i></span>
+                                                {% endif %}
+                                                {{ workshop["workshop_name"] }}, ID #{{ workshop["workshop_id"] }}
+                                            </a>
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="text-muted">{{ workshop["subject"] }}, Level {{ workshop["level"] }}</h5>
+
+                                        {% if workshop["summary"] != None %}
+                                        <p class="lead">{{ workshop["summary"] }}</p>
+                                        {% endif %}
+                                        
+                                        <h5>Date: {{ workshop["date"] }}</h5>
+                                        <h5>Location: {{ workshop["location"] }}</h5>
+                                        <h5>Teacher: {{ workshop["title"] }} {{ workshop["last_name"] }}</h5>
+                                        <a href="/workshop/view/{{ workshop["workshop_id"] }}" class="btn btn-lg btn-primary btn-block" id="workshop_view_btn" value="{{ workshop["workshop_id"] }}">View</a>
+                                    </div>
+                                    <!--<div class="card-footer">
+                                        <small class="text-muted">Student limit: x/y</small>
+                                    </div>-->
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            {% if not user.is_student() %}
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Subject</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for workshop in workshops %}
+                                    <tr id="{{ workshop["workshop_id"] }}">
+                                        {% if workshop["private"] == 1 %}
+                                        <td><span><i class="fa fa-lock mr-2"></i></span>{{ workshop["workshop_name"] }}</td>
+                                        {% else %}
+                                        <td>{{ workshop["workshop_name"] }}</td>
+                                        {% endif %}
+                                        <td>Level {{ workshop["level"] }} {{ workshop["subject"] }}</td>
+                                        <td>{{ workshop["date"] }}</td>
+                                        <td>
+                                            <div class="btn-toolbar">
+                                                <a href="/workshop/view/{{ workshop["workshop_id"] }}" class="btn btn-sm btn-primary mr-3" id="workshop_view_btn" value="{{ workshop["workshop_id"] }}">View</a>
+                                                {% if not user.is_student() %}
+                                                <a class="btn btn-sm btn-info mr-3" href="/workshop/edit/{{ workshop["workshop_id"] }}">Edit</a>
+                                                <button class="btn btn-sm btn-danger" data-workshopname="{{ workshop["workshop_name"] }}" id="delete_workshop_btn" value="{{ workshop["workshop_id"] }}">Delete</button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="modal fade text-left" id="workshop_delete_modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4>Delete workshop</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <p id="workshop_id_modal">Are you sure you want to delete workshop #---?</p>
+                                    <div class="btn-toolbar">
+                                        <button id="workshopdel_keep_btn" class="btn btn-sm btn-primary mr-2">Keep</button>
+                                        <button id="workshopdel_delete_btn" class="btn btn-sm btn-danger">Delete</button>
+                                    </div>
+                                    <p id="workshopdel_response_text"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
