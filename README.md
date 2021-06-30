@@ -12,10 +12,10 @@ The backend is written entirely in Python which utilizes the Flask micro-web fra
 ## Screenshots
 
 ### Guest view
-![guest view](screenshots/guest_view.JPG "Guest View")
+![guest view](screenshots/guest_view.jpg "Guest View")
 
 ### Admin overview
-![admin overview](screenshots/admin_overview.JPG "Admin Overview")
+![admin overview](screenshots/admin_overview.jpg "Admin Overview")
 
 ### Workshop overview
-![workshop overview](screenshots/workshop_overview.JPG "Workshop Overview")
+![workshop overview](screenshots/workshop_overview.jpg "Workshop Overview")
