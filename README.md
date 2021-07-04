@@ -1,7 +1,8 @@
 # WorkshopManager
 
 Workshop manager project for my final year 13 computer studies assignment  
-Click [here](https://marknzl.pythonanywhere.com/) for a live version! _NOTE: First load may take a while, so please be patient :)_
+Click [here](https://marknzl.pythonanywhere.com/) for a live version! _NOTE: First load may take a while, so please be patient :)_  
+**NOTE: This is all my original work from year 13; no modifications have been made whatsoever since 2019.**
 
 ## Overview
 This is a web-based workshop manager which I developed independently in year 13 for my final computer studies assignment. It allows students to create accounts and view/enrol in workshops. Teachers can create workshops and are able to customize settings such as max students, date/time and more. File uploads are also supported, as well as the ability to create private workshops and allow students to join using invite-only codes.
